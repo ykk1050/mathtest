@@ -1169,7 +1169,7 @@
           </div>
           <p class="instruction-text">※ 답은 기약분수 형태로 입력해주세요</p>
           <div id="feedback" class="feedback" style="display: none;"></div>
-          <button class="btn btn-success" onclick="generateProblem()">시작</button>
+          <button class="btn btn-success" id="startBtn" onclick="generateProblem()">시작</button>
         </div>
       </div>
 
@@ -1863,6 +1863,7 @@
 
     // Practice Functions
     function generateProblem() {
+      document.getElementById('startBtn').disabled = true; // <-- 이 줄을 추가하세요
       const problem = generateFractionProblem();
       gameState.currentProblem = problem;
       gameState.currentAnswer = problem.answer;
@@ -2677,7 +2678,16 @@
       console.log('UI 업데이트 중...');
       updateAllUI();
       console.log('UI 업데이트 완료');
-      
+
+      // --- 수정 시작: 버튼 및 문제 상태 초기화 ---
+      document.getElementById('startBtn').disabled = false;
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('wholeInput').disabled = true;
+      document.getElementById('numeratorInput').disabled = true;
+      document.getElementById('denominatorInput').disabled = true;
+      document.getElementById('problem').innerHTML = "문제를 생성하려면 시작 버튼을 누르세요";
+      // --- 수정 끝 ---
+
       showNotification('✅ 게임 데이터가 초기화되었습니다.');
       console.log('resetGameData 함수 실행 완료');
     }
