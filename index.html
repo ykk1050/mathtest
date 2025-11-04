@@ -1119,7 +1119,7 @@
   <div class="app-container">
     <div class="header">
       <button class="reset-button" onclick="confirmResetGame()">🔄 초기화</button>
-      <h1 class="app-title">수학몬 마스터_1.12분수의 곱셈</h1>
+      <h1 class="app-title">수학몬 마스터_1.13분수의 곱셈</h1>
       <div class="title-info">
         <div class="current-title" id="currentTitle">⭐ 초보자</div>
         <div class="title-list" id="titleList">
@@ -2306,11 +2306,11 @@
             feedback.className = 'feedback incorrect';
             feedback.style.display = 'block';
             setTimeout(() => { feedback.style.display = 'none'; }, 2000);
+            document.getElementById('captureSubmitBtn').disabled = false; // ✅ 버튼 재활성화 추가
             return; // 대분수로 입력하지 않아 오답 처리
         }
      }
 
-      gameState.ballInventory[gameState.selectedBall]--; // <-- 검증 통과 후 볼 소모!
       const userReduced = reduceFraction(userImproper.numerator, userImproper.denominator);
       const isCorrect = userReduced.numerator === gameState.currentAnswer.numerator && userReduced.denominator === gameState.currentAnswer.denominator;
 
