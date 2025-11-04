@@ -1119,7 +1119,7 @@
   <div class="app-container">
     <div class="header">
       <button class="reset-button" onclick="confirmResetGame()">🔄 초기화</button>
-      <h1 class="app-title">수학몬 마스터_1.13분수의 곱셈</h1>
+      <h1 class="app-title">수학몬 마스터_1.14분수의 곱셈</h1>
       <div class="title-info">
         <div class="current-title" id="currentTitle">⭐ 초보자</div>
         <div class="title-list" id="titleList">
@@ -1878,6 +1878,36 @@
       return { problemHtml, answer };
     }
 
+    /**
+ * 포획볼 선택 UI와 퀴즈 출제 로직을 재고에 따라 업데이트합니다.
+ */
+    function updateCaptureBallSelection() {
+        // UI 업데이트 로직 (포획볼 테두리, 볼 개수 표시 등)은 기존 로직을 따릅니다.
+        // ... (기존 포획볼 선택 관련 UI 업데이트 로직이 여기에 있다면 그대로 유지하거나 추가하세요.)
+
+        const selectedBallKey = gameState.selectedBall;
+        if (!selectedBallKey) return; // 선택된 볼이 없으면 종료
+
+        const selectedBall = captureBalls[selectedBallKey];
+        const ballCount = gameState.ballInventory[selectedBallKey];
+        const submitBtn = document.getElementById('captureSubmitBtn');
+
+        // 👇👇👇 재고에 따른 버튼/퀴즈 로직 (핵심 수정) 👇👇👇
+        if (ballCount > 0) {
+            submitBtn.disabled = false; // 재고 있으면 버튼 활성화
+            generateCaptureQuiz();      // ✅ 새 퀴즈 출제!
+            
+            // 피드백 메시지 초기화
+            document.getElementById('captureQuizFeedback').style.display = 'none';
+            
+        } else {
+            submitBtn.disabled = true;  // 재고 없으면 버튼 비활성화
+            document.getElementById('captureQuiz').textContent = `${selectedBall.name} 재고가 없어 포획을 진행할 수 없습니다.`;
+            document.getElementById('captureQuestionImg').src = ''; // 이미지 제거
+        }
+        // ------------------------------------------------
+    }  
+
     // Practice Functions
     function generateProblem() {
       document.getElementById('startBtn').disabled = true; // <-- 이 줄을 추가하세요
@@ -2176,6 +2206,8 @@
         if (availableBalls.length > 0) gameState.selectedBall = availableBalls[0].id;
       }
       
+
+
       if (gameState.selectedBall && (gameState.ballInventory[gameState.selectedBall] || 0) > 0) {
         const selectedBallItem = shopItems.find(item => item.id === gameState.selectedBall);
         const count = gameState.ballInventory[gameState.selectedBall] || 0;
@@ -2236,7 +2268,7 @@
       // [1번 문제 수정] : 더블클릭 방지를 위해 버튼을 즉시 '잠급(비활성화)'니다.
       document.getElementById('captureSubmitBtn').disabled = true;
 
-      
+      const feedback = document.getElementById('captureQuizFeedback');
 
       if (!gameState.selectedBall) {
           showNotification('포획볼을 먼저 선택하세요!');
@@ -2245,11 +2277,24 @@
           return;
       }
 
+      // 👇👇👇 💡 1. 재고 부족 시 조기 종료 로직 추가 (볼 소모 버그 해결) 👇👇👇
+      const selectedBallKey = gameState.selectedBall;
+      const selectedBall = captureBalls[selectedBallKey]; // ✅ captureBalls 변수를 사용하기 위해 추가
+      if ((gameState.ballInventory[selectedBallKey] || 0) <= 0) { // ✅ 재고를 더 안전하게 확인          // feedback 변수가 아직 정의되지 않았으므로 여기서 정의합니다.
+          const feedback = document.getElementById('captureQuizFeedback'); 
+          feedback.textContent = `❌ ${captureBalls[selectedBall].name} 재고가 없습니다!`;
+          feedback.className = 'feedback incorrect';
+          feedback.style.display = 'block';
+          setTimeout(() => { feedback.style.display = 'none'; }, 2000);
+          document.getElementById('captureSubmitBtn').disabled = false; // 버튼 재활성화
+          updateCaptureBallSelection(); // 볼 재고 UI를 바로 업데이트
+          return; 
+      }
+
       // --- [3-2번 문제 수정 시작] : 볼을 소모하기 전에 입력값 검증 ---
       const wholeValue = document.getElementById('captureWholeInput').value;
       const numeratorValue = document.getElementById('captureNumeratorInput').value;
       const denominatorValue = document.getElementById('captureDenominatorInput').value;
-      const feedback = document.getElementById('captureQuizFeedback');
 
       // 1. 분자 또는 분모가 비어있는지 검사
       if (numeratorValue === '' || denominatorValue === '') {
@@ -2283,7 +2328,6 @@
 
       
       // [3-2 수정] : 모든 검증을 통과한 후에야 포획볼을 소모합니다. (위치 변경)
-      gameState.ballInventory[gameState.selectedBall]--;
 
       // 이제 모든 입력값이 유효하므로 정답을 비교합니다.
       const userImproper = mixedToImproper(wholeInput, numeratorInput, denominatorInput);
@@ -2307,9 +2351,13 @@
             feedback.style.display = 'block';
             setTimeout(() => { feedback.style.display = 'none'; }, 2000);
             document.getElementById('captureSubmitBtn').disabled = false; // ✅ 버튼 재활성화 추가
+
             return; // 대분수로 입력하지 않아 오답 처리
         }
      }
+
+     gameState.ballInventory[gameState.selectedBall]--;
+
 
       const userReduced = reduceFraction(userImproper.numerator, userImproper.denominator);
       const isCorrect = userReduced.numerator === gameState.currentAnswer.numerator && userReduced.denominator === gameState.currentAnswer.denominator;
