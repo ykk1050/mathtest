@@ -1119,7 +1119,7 @@
   <div class="app-container">
     <div class="header">
       <button class="reset-button" onclick="confirmResetGame()">🔄 초기화</button>
-      <h1 class="app-title">수학몬 마스터_1.07분수의 곱셈</h1>
+      <h1 class="app-title">수학몬 마스터_1.08분수의 곱셈</h1>
       <div class="title-info">
         <div class="current-title" id="currentTitle">⭐ 초보자</div>
         <div class="title-list" id="titleList">
@@ -2270,7 +2270,7 @@
             feedback.className = 'feedback incorrect';
             setTimeout(() => {
               const escapeChance = Math.random() * 100;
-              if (escapeChance <= 15) {
+              if (escapeChance <= 30) {
                 showNotification(`💨 ${gameState.currentMonster.name}이(가) 도망쳤습니다!`);
                 resetCapture();
               } else {
@@ -2292,7 +2292,7 @@
         feedback.style.display = 'block';
         setTimeout(() => {
           const escapeChance = Math.random() * 100;
-          if (escapeChance <= 8) {
+          if (escapeChance <= 30) {
             showNotification(`💨 ${gameState.currentMonster.name}이(가) 기회를 틈타 도망쳤습니다!`);
             resetCapture();
           } else {
