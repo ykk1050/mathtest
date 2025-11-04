@@ -1119,7 +1119,7 @@
   <div class="app-container">
     <div class="header">
       <button class="reset-button" onclick="confirmResetGame()">🔄 초기화</button>
-      <h1 class="app-title">수학몬 마스터_1.1분수의 곱셈</h1>
+      <h1 class="app-title">수학몬 마스터_1.11분수의 곱셈</h1>
       <div class="title-info">
         <div class="current-title" id="currentTitle">⭐ 초보자</div>
         <div class="title-list" id="titleList">
@@ -1929,6 +1929,23 @@
         setTimeout(() => { feedback.style.display = 'none'; }, 2000);
         return; // 기약분수가 아니므로 즉시 함수 종료
     }
+
+    // 👇👇👇 대분수 강제 입력 체크 로직 추가 👇👇👇
+    // 정답이 가분수 형태이고 (분자가 분모보다 크거나 같고),
+    // 사용자가 입력한 정수부가 0일 경우 (즉, 가분수 형태로 입력했을 경우)
+    if (gameState.currentAnswer.numerator >= gameState.currentAnswer.denominator) {
+        // userImproper를 다시 분석하여 정수부가 0인지 확인
+        const isUserImproper = userImproper.whole === 0;
+
+        if (isUserImproper) {
+            feedback.textContent = `❌ 답을 대분수로 고칠 수 있을 경우 반드시 대분수 형태로 입력해야 합니다.`;
+            feedback.className = 'feedback incorrect';
+            feedback.style.display = 'block';
+            setTimeout(() => { feedback.style.display = 'none'; }, 2000);
+            return; // 대분수로 입력하지 않아 오답 처리
+        }
+    }
+    // ------------------------------------------
       const userReduced = reduceFraction(userImproper.numerator, userImproper.denominator);
         // --- 🚨 디버깅 코드 시작 🚨 ---
       console.log("--- 정답 비교 디버그 ---");
@@ -2281,6 +2298,20 @@
           document.getElementById('captureSubmitBtn').disabled = false; // 버튼 다시 활성화
           return; // 💥 기약분수가 아니므로 볼 소모 없이 함수 종료
       }
+
+      if (gameState.currentAnswer.numerator >= gameState.currentAnswer.denominator) {
+        // userImproper를 다시 분석하여 정수부가 0인지 확인
+        const isUserImproper = userImproper.whole === 0;
+
+        if (isUserImproper) {
+            feedback.textContent = `❌ 답을 대분수로 고칠 수 있을 경우 반드시 대분수 형태로 입력해야 합니다.`;
+            feedback.className = 'feedback incorrect';
+            feedback.style.display = 'block';
+            setTimeout(() => { feedback.style.display = 'none'; }, 2000);
+            document.getElementById('captureSubmitBtn').disabled = false; // 버튼 다시 활성화
+            return; // 대분수로 입력하지 않아 오답 처리 (볼 소모 방지)
+        }
+    }
 
       gameState.ballInventory[gameState.selectedBall]--; // <-- 검증 통과 후 볼 소모!
       const userReduced = reduceFraction(userImproper.numerator, userImproper.denominator);
