@@ -1119,7 +1119,7 @@
   <div class="app-container">
     <div class="header">
       <button class="reset-button" onclick="confirmResetGame()">🔄 초기화</button>
-      <h1 class="app-title">수학몬 마스터_1.14분수의 곱셈</h1>
+      <h1 class="app-title">수학몬 마스터_1.15분수의 곱셈</h1>
       <div class="title-info">
         <div class="current-title" id="currentTitle">⭐ 초보자</div>
         <div class="title-list" id="titleList">
@@ -2279,10 +2279,15 @@
 
       // 👇👇👇 💡 1. 재고 부족 시 조기 종료 로직 추가 (볼 소모 버그 해결) 👇👇👇
       const selectedBallKey = gameState.selectedBall;
-      const selectedBall = captureBalls[selectedBallKey]; // ✅ captureBalls 변수를 사용하기 위해 추가
-      if ((gameState.ballInventory[selectedBallKey] || 0) <= 0) { // ✅ 재고를 더 안전하게 확인          // feedback 변수가 아직 정의되지 않았으므로 여기서 정의합니다.
-          const feedback = document.getElementById('captureQuizFeedback'); 
-          feedback.textContent = `❌ ${captureBalls[selectedBall].name} 재고가 없습니다!`;
+      const selectedBall = captureBalls[selectedBallKey];
+      
+      // ✅ 재고를 확인하고 0 이하일 경우 오류 처리
+      if ((gameState.ballInventory[selectedBallKey] || 0) <= 0) {
+          
+          // ❌ const feedback = ... 문장을 삭제했습니다.
+          
+          // ✅ selectedBall (볼 객체)의 name 속성을 직접 사용하도록 수정했습니다.
+          feedback.textContent = `❌ ${selectedBall.name} 재고가 없습니다!`; 
           feedback.className = 'feedback incorrect';
           feedback.style.display = 'block';
           setTimeout(() => { feedback.style.display = 'none'; }, 2000);
