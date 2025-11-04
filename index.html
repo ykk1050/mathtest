@@ -1215,8 +1215,7 @@
                     <input type="number" class="answer-input fraction-input" id="captureDenominatorInput" placeholder="분모" min="1">
                   </div>
                 </div>
-                <button class="btn btn-primary" onclick="submitCaptureAnswer()">포획 시도</button>
-              </div>
+                <button class="btn btn-primary" id="captureSubmitBtn" onclick="submitCaptureAnswer()">포획 시도</button>              </div>
               <p class="instruction-text">※ 답은 기약분수 형태로 입력해주세요</p>
               <div id="captureQuizFeedback" class="feedback" style="display: none;"></div>
             </div>
@@ -2088,6 +2087,10 @@
         monsterEmojiElement.innerHTML = randomMonster.emoji;
       }
       document.getElementById('monsterInfo').textContent = `${randomMonster.name} (${getRarityText(rarity)})`;
+      
+      generateCaptureQuiz(); // <-- 1. 문제를 여기서 미리 생성합니다.
+      document.getElementById('quizSection').style.display = 'block'; // <-- 2. 퀴즈 섹션을 바로 표시합니다.
+
       setTimeout(() => updateCaptureBallSelection(), 100);
     }
 
@@ -2136,8 +2139,7 @@
           document.getElementById('captureRateInfo').style.display = 'block';
         }
         
-        document.getElementById('quizSection').style.display = 'block';
-        generateCaptureQuiz();
+
       } else {
         gameState.selectedBall = null;
         selectedBallInfo.innerHTML = '<p>포획볼을 선택하세요</p>';
@@ -2167,6 +2169,7 @@
     }
 
     function generateCaptureQuiz() {
+      document.getElementById('captureSubmitBtn').disabled = false; // <-- 이 줄을 추가합니다.
       const problem = generateFractionProblem();
       gameState.currentProblem = problem;
       gameState.currentAnswer = problem.answer;
@@ -2178,9 +2181,12 @@
     }
 
     function submitCaptureAnswer() {
+      document.getElementById('captureSubmitBtn').disabled = true; // <-- 1. 이 줄을 추가 (즉시 비활성화)
+
       if (!gameState.selectedBall) {
-        showNotification('포획볼을 먼저 선택하세요!');
-        return;
+          showNotification('포획볼을 먼저 선택하세요!');
+          document.getElementById('captureSubmitBtn').disabled = false; // <-- 2. (선택적) 오류 발생 시 다시 활성화
+          return;
       }
       
       gameState.ballInventory[gameState.selectedBall]--;
@@ -2292,6 +2298,7 @@
     }
 
     function resetCapture() {
+      document.getElementById('captureSubmitBtn').disabled = false; // <-- 이 줄을 추가합니다.
       document.getElementById('explorationPhase').style.display = 'block';
       document.getElementById('capturePhase').style.display = 'none';
       document.getElementById('quizSection').style.display = 'none';
