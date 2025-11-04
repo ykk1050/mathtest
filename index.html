@@ -2254,7 +2254,7 @@
       const userImproper = mixedToImproper(wholeInput, numeratorInput, denominatorInput);
       const userReduced = reduceFraction(userImproper.numerator, userImproper.denominator);
       const isCorrect = userReduced.numerator === gameState.currentAnswer.numerator && userReduced.denominator === gameState.currentAnswer.denominator;
-      
+
       if (isCorrect) {
         const captureRate = calculateCaptureRate(gameState.currentMonster.rarity);
         const captureRoll = Math.random() * 100;
@@ -2280,6 +2280,7 @@
                 document.getElementById("captureNumeratorInput").value = "";
                 document.getElementById("captureDenominatorInput").value = "";
                 document.getElementById("captureWholeInput").focus();
+                document.getElementById('captureSubmitBtn').disabled = false;
               }
             }, 1500);
           }
@@ -2299,6 +2300,7 @@
             document.getElementById("captureNumeratorInput").value = "";
             document.getElementById("captureDenominatorInput").value = "";
             document.getElementById("captureWholeInput").focus();
+            document.getElementById('captureSubmitBtn').disabled = false;
           }
         }, 1500);
       }
