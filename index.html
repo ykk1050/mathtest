@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>수학몬 마스터 TEST- Monster RPG1.05</title>
+  <title>수학몬 마스터 TEST- Monster RPG</title>
   <style>
         body {
             box-sizing: border-box;
@@ -1119,7 +1119,7 @@
   <div class="app-container">
     <div class="header">
       <button class="reset-button" onclick="confirmResetGame()">🔄 초기화</button>
-      <h1 class="app-title">수학몬 마스터_1.05분수의 곱셈</h1>
+      <h1 class="app-title">수학몬 마스터_1.06분수의 곱셈</h1>
       <div class="title-info">
         <div class="current-title" id="currentTitle">⭐ 초보자</div>
         <div class="title-list" id="titleList">
@@ -2280,6 +2280,7 @@
                 document.getElementById("captureNumeratorInput").value = "";
                 document.getElementById("captureDenominatorInput").value = "";
                 document.getElementById("captureWholeInput").focus();
+                generateCaptureQuiz(); // <-- 이 한 줄을 추가합니다.
                 document.getElementById('captureSubmitBtn').disabled = false;
               }
             }, 1500);
