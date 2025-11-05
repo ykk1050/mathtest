@@ -2320,7 +2320,7 @@
                   feedback.className = 'feedback incorrect';
                   setTimeout(() => {
                       const escapeChance = Math.random() * 100;
-                      if (escapeChance <= 15) {
+                      if (escapeChance <= 30) {
                           showNotification(`💨 ${gameState.currentMonster.name}이(가) 도망쳤습니다!`);
                           resetCapture();
                       } else {
@@ -2342,7 +2342,7 @@
           feedback.style.display = 'block';
           setTimeout(() => {
               const escapeChance = Math.random() * 100;
-              if (escapeChance <= 8) {
+              if (escapeChance <= 40) {
                   showNotification(`💨 ${gameState.currentMonster.name}이(가) 기회를 틈타 도망쳤습니다!`);
                   resetCapture();
               } else {
