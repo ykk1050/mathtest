@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>수학몬 마스터 TEST- Monster RPG</title>
+  <title>test수학몬 마스터1.01- Monster RPG</title>
   <style>
         body {
             box-sizing: border-box;
@@ -1119,7 +1119,7 @@
   <div class="app-container">
     <div class="header">
       <button class="reset-button" onclick="confirmResetGame()">🔄 초기화</button>
-      <h1 class="app-title">수학몬 마스터_1.16분수의 곱셈</h1>
+      <h1 class="app-title">수학몬 마스터_분수의 곱셈1.01</h1>
       <div class="title-info">
         <div class="current-title" id="currentTitle">⭐ 초보자</div>
         <div class="title-list" id="titleList">
@@ -1470,14 +1470,14 @@
     const GAME_BALANCE = {
       COIN_PER_PROBLEM: 30,
       STREAK_BONUS_INTERVAL: 3,
-      STREAK_BONUS_AMOUNT: 60,
+      STREAK_BONUS_AMOUNT: 100,
       CAPTURE_TRAINING_BONUS: 2, // per level
       MAX_CAPTURE_TRAINING: 20,
       BASE_CAPTURE_RATES: {
-        common: 35,
-        rare: 25,
-        epic: 15,
-        legendary: 5
+        common: 40,
+        rare: 30,
+        epic: 20,
+        legendary: 10
       },
       BALL_MULTIPLIERS: {
         monster_ball: 1.0,
@@ -1711,16 +1711,6 @@
       return b === 0 ? a : gcd(b, a % b);
     }
 
-    function gcd(a, b) {
-    a = Math.abs(a);
-    b = Math.abs(b);
-
-    while (b) {
-        [a, b] = [b, a % b];
-    }
-    return a;
-}
-    
     function reduceFraction(numerator, denominator) {
       const g = gcd(Math.abs(numerator), Math.abs(denominator));
       return { numerator: numerator / g, denominator: denominator / g };
@@ -1878,36 +1868,6 @@
       return { problemHtml, answer };
     }
 
-    /**
- * 포획볼 선택 UI와 퀴즈 출제 로직을 재고에 따라 업데이트합니다.
- */
-    function updateCaptureBallSelection() {
-        // UI 업데이트 로직 (포획볼 테두리, 볼 개수 표시 등)은 기존 로직을 따릅니다.
-        // ... (기존 포획볼 선택 관련 UI 업데이트 로직이 여기에 있다면 그대로 유지하거나 추가하세요.)
-
-        const selectedBallKey = gameState.selectedBall;
-        if (!selectedBallKey) return; // 선택된 볼이 없으면 종료
-
-        const selectedBall = captureBalls[selectedBallKey];
-        const ballCount = gameState.ballInventory[selectedBallKey];
-        const submitBtn = document.getElementById('captureSubmitBtn');
-
-        // 👇👇👇 재고에 따른 버튼/퀴즈 로직 (핵심 수정) 👇👇👇
-        if (ballCount > 0) {
-            submitBtn.disabled = false; // 재고 있으면 버튼 활성화
-            generateCaptureQuiz();      // ✅ 새 퀴즈 출제!
-            
-            // 피드백 메시지 초기화
-            document.getElementById('captureQuizFeedback').style.display = 'none';
-            
-        } else {
-            submitBtn.disabled = true;  // 재고 없으면 버튼 비활성화
-            document.getElementById('captureQuiz').textContent = `${selectedBall.name} 재고가 없어 포획을 진행할 수 없습니다.`;
-            document.getElementById('captureQuestionImg').src = ''; // 이미지 제거
-        }
-        // ------------------------------------------------
-    }  
-
     // Practice Functions
     function generateProblem() {
       document.getElementById('startBtn').disabled = true; // <-- 이 줄을 추가하세요
@@ -1952,29 +1912,6 @@
           return; // 함수 종료
       }
       const userImproper = mixedToImproper(wholeInput, numeratorInput, denominatorInput);
-      if (gcd(userImproper.numerator, userImproper.denominator) !== 1) {
-        feedback.textContent = `❌ 답은 반드시 기약분수 형태로 입력해야 합니다.`;
-        feedback.className = 'feedback incorrect';
-        feedback.style.display = 'block';
-        setTimeout(() => { feedback.style.display = 'none'; }, 2000);
-        return; // 기약분수가 아니므로 즉시 함수 종료
-    }
-
-    // 👇👇👇 대분수 강제 입력 체크 로직 추가 👇👇👇
-    // 정답이 가분수 형태이고 (분자가 분모보다 크거나 같고),
-    // 사용자가 입력한 정수부가 0일 경우 (즉, 가분수 형태로 입력했을 경우)
-    if (gameState.currentAnswer.numerator >= gameState.currentAnswer.denominator) {
-        // userImproper를 다시 분석하여 정수부가 0인지 확인
-        // 💡 수정된 코드: 사용자가 정수부 입력 칸을 비워두거나 0으로 입력했는지 확인
-        if (wholeInput === 0) { // wholeInput은 이미 parseInt() 처리되어 0 또는 정수 값임
-            feedback.textContent = `❌ 답을 대분수로 고칠 수 있을 경우 반드시 대분수 형태로 입력해야 합니다.`;
-            feedback.className = 'feedback incorrect';
-            feedback.style.display = 'block';
-            setTimeout(() => { feedback.style.display = 'none'; }, 2000);
-            return; // 대분수로 입력하지 않아 오답 처리
-        }
-    }
-    // ------------------------------------------
       const userReduced = reduceFraction(userImproper.numerator, userImproper.denominator);
         // --- 🚨 디버깅 코드 시작 🚨 ---
       console.log("--- 정답 비교 디버그 ---");
@@ -2206,8 +2143,6 @@
         if (availableBalls.length > 0) gameState.selectedBall = availableBalls[0].id;
       }
       
-
-
       if (gameState.selectedBall && (gameState.ballInventory[gameState.selectedBall] || 0) > 0) {
         const selectedBallItem = shopItems.find(item => item.id === gameState.selectedBall);
         const count = gameState.ballInventory[gameState.selectedBall] || 0;
@@ -2221,10 +2156,6 @@
           const captureRate = calculateCaptureRate(gameState.currentMonster.rarity);
           document.getElementById('captureRateText').textContent = `${Math.round(captureRate)}%`;
           document.getElementById('captureRateInfo').style.display = 'block';
-
-          document.getElementById('quizSection').style.display = 'block';
-          generateCaptureQuiz();
-
         }
         
 
@@ -2272,8 +2203,6 @@
       // [1번 문제 수정] : 더블클릭 방지를 위해 버튼을 즉시 '잠급(비활성화)'니다.
       document.getElementById('captureSubmitBtn').disabled = true;
 
-      const feedback = document.getElementById('captureQuizFeedback');
-
       if (!gameState.selectedBall) {
           showNotification('포획볼을 먼저 선택하세요!');
           // [1번 문제 수정] : 오류 발생 시 버튼을 다시 '풉(활성화)'니다.
@@ -2281,29 +2210,11 @@
           return;
       }
 
-      // 👇👇👇 💡 1. 재고 부족 시 조기 종료 로직 추가 (볼 소모 버그 해결) 👇👇👇
-      const selectedBallKey = gameState.selectedBall;
-      const selectedBall = captureBalls[selectedBallKey];
-      
-      // ✅ 재고를 확인하고 0 이하일 경우 오류 처리
-      if ((gameState.ballInventory[selectedBallKey] || 0) <= 0) {
-          
-          // ❌ const feedback = ... 문장을 삭제했습니다.
-          
-          // ✅ selectedBall (볼 객체)의 name 속성을 직접 사용하도록 수정했습니다.
-          feedback.textContent = `❌ ${selectedBall.name} 재고가 없습니다!`; 
-          feedback.className = 'feedback incorrect';
-          feedback.style.display = 'block';
-          setTimeout(() => { feedback.style.display = 'none'; }, 2000);
-          document.getElementById('captureSubmitBtn').disabled = false; // 버튼 재활성화
-          updateCaptureBallSelection(); // 볼 재고 UI를 바로 업데이트
-          return; 
-      }
-
       // --- [3-2번 문제 수정 시작] : 볼을 소모하기 전에 입력값 검증 ---
       const wholeValue = document.getElementById('captureWholeInput').value;
       const numeratorValue = document.getElementById('captureNumeratorInput').value;
       const denominatorValue = document.getElementById('captureDenominatorInput').value;
+      const feedback = document.getElementById('captureQuizFeedback');
 
       // 1. 분자 또는 분모가 비어있는지 검사
       if (numeratorValue === '' || denominatorValue === '') {
@@ -2337,37 +2248,10 @@
 
       
       // [3-2 수정] : 모든 검증을 통과한 후에야 포획볼을 소모합니다. (위치 변경)
+      gameState.ballInventory[gameState.selectedBall]--;
 
       // 이제 모든 입력값이 유효하므로 정답을 비교합니다.
       const userImproper = mixedToImproper(wholeInput, numeratorInput, denominatorInput);
-
-        // 👇👇👇 기약분수 체크 로직 추가 (볼 소모 방지) 👇👇👇
-      if (gcd(userImproper.numerator, userImproper.denominator) !== 1) {
-          feedback.textContent = `❌ 답은 반드시 기약분수 형태로 입력해야 합니다.`;
-          feedback.className = 'feedback incorrect';
-          feedback.style.display = 'block';
-          setTimeout(() => { feedback.style.display = 'none'; }, 2000);
-          document.getElementById('captureSubmitBtn').disabled = false; // 버튼 다시 활성화
-          return; // 💥 기약분수가 아니므로 볼 소모 없이 함수 종료
-      }
-
-      if (gameState.currentAnswer.numerator >= gameState.currentAnswer.denominator) {
-        // userImproper를 다시 분석하여 정수부가 0인지 확인
-        // 💡 수정된 코드: 사용자가 정수부 입력 칸을 비워두거나 0으로 입력했는지 확인
-        if (wholeInput === 0) { // wholeInput은 이미 parseInt() 처리되어 0 또는 정수 값임
-            feedback.textContent = `❌ 답을 대분수로 고칠 수 있을 경우 반드시 대분수 형태로 입력해야 합니다.`;
-            feedback.className = 'feedback incorrect';
-            feedback.style.display = 'block';
-            setTimeout(() => { feedback.style.display = 'none'; }, 2000);
-            document.getElementById('captureSubmitBtn').disabled = false; // ✅ 버튼 재활성화 추가
-
-            return; // 대분수로 입력하지 않아 오답 처리
-        }
-     }
-
-     gameState.ballInventory[gameState.selectedBall]--;
-
-
       const userReduced = reduceFraction(userImproper.numerator, userImproper.denominator);
       const isCorrect = userReduced.numerator === gameState.currentAnswer.numerator && userReduced.denominator === gameState.currentAnswer.denominator;
 
@@ -2386,7 +2270,7 @@
             feedback.className = 'feedback incorrect';
             setTimeout(() => {
               const escapeChance = Math.random() * 100;
-              if (escapeChance <= 30) {
+              if (escapeChance <= 15) {
                 showNotification(`💨 ${gameState.currentMonster.name}이(가) 도망쳤습니다!`);
                 resetCapture();
               } else {
@@ -2408,7 +2292,7 @@
         feedback.style.display = 'block';
         setTimeout(() => {
           const escapeChance = Math.random() * 100;
-          if (escapeChance <= 30) {
+          if (escapeChance <= 8) {
             showNotification(`💨 ${gameState.currentMonster.name}이(가) 기회를 틈타 도망쳤습니다!`);
             resetCapture();
           } else {
