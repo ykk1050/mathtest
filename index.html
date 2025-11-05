@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>test수학몬 마스터1.04- Monster RPG</title>
+  <title>test수학몬 마스터1.05- Monster RPG</title>
   <style>
         body {
             box-sizing: border-box;
@@ -1119,7 +1119,7 @@
   <div class="app-container">
     <div class="header">
       <button class="reset-button" onclick="confirmResetGame()">🔄 초기화</button>
-      <h1 class="app-title">수학몬 마스터_분수의 곱셈1.04</h1>
+      <h1 class="app-title">수학몬 마스터_분수의 곱셈1.05</h1>
       <div class="title-info">
         <div class="current-title" id="currentTitle">⭐ 초보자</div>
         <div class="title-list" id="titleList">
@@ -2183,6 +2183,10 @@
           const captureRate = calculateCaptureRate(gameState.currentMonster.rarity);
           document.getElementById('captureRateText').textContent = `${Math.round(captureRate)}%`;
           document.getElementById('captureRateInfo').style.display = 'block';
+
+          // 👇👇👇 [핵심 수정: 이 두 줄을 추가해야 합니다] 👇👇👇
+          document.getElementById('quizSection').style.display = 'block'; // 퀴즈 영역을 다시 보이게 함
+          generateCaptureQuiz(); // 새 문제를 생성함
         }
         
 
