@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>test수학몬 마스터1.06- Monster RPG</title>
+  <title>test수학몬 마스터1.07- Monster RPG</title>
   <style>
         body {
             box-sizing: border-box;
@@ -1119,7 +1119,7 @@
   <div class="app-container">
     <div class="header">
       <button class="reset-button" onclick="confirmResetGame()">🔄 초기화</button>
-      <h1 class="app-title">수학몬 마스터_분수의 곱셈1.06</h1>
+      <h1 class="app-title">수학몬 마스터_분수의 곱셈1.07</h1>
       <div class="title-info">
         <div class="current-title" id="currentTitle">⭐ 초보자</div>
         <div class="title-list" id="titleList">
@@ -1887,128 +1887,131 @@
     }
 
     function checkAnswer() {
-      const wholeValue = document.getElementById('wholeInput').value;
-      const numeratorValue = document.getElementById('numeratorInput').value;
-      const denominatorValue = document.getElementById('denominatorInput').value;
-      const feedback = document.getElementById('feedback');
-      
+        const wholeValue = document.getElementById('wholeInput').value;
+        const numeratorValue = document.getElementById('numeratorInput').value;
+        const denominatorValue = document.getElementById('denominatorInput').value;
+        const feedback = document.getElementById('feedback');
+        
 
-      if (numeratorValue === '' || denominatorValue === '') {
-          feedback.textContent = `❌ 분자와 분모를 모두 입력해야 합니다.`;
-          feedback.className = 'feedback incorrect';
-          feedback.style.display = 'block';
-          setTimeout(() => { feedback.style.display = 'none'; }, 2000);
-          return; // 함수 종료
-      }
-      
-      const wholeInput = parseInt(wholeValue) || 0;
-      const numeratorInput = parseInt(numeratorValue) || 0;
-      const denominatorInput = parseInt(denominatorValue);
+        if (numeratorValue === '' || denominatorValue === '') {
+            feedback.textContent = `❌ 분자와 분모를 모두 입력해야 합니다.`;
+            feedback.className = 'feedback incorrect';
+            feedback.style.display = 'block';
+            setTimeout(() => { feedback.style.display = 'none'; }, 2000);
+            return; // 함수 종료
+        }
+        
+        const wholeInput = parseInt(wholeValue) || 0;
+        const numeratorInput = parseInt(numeratorValue) || 0;
+        const denominatorInput = parseInt(denominatorValue);
 
-      if (isNaN(denominatorInput) || denominatorInput === 0) {
-          feedback.textContent = `❌ 분모는 0이 될 수 없습니다. (1 이상의 숫자)`;
-          feedback.className = 'feedback incorrect';
-          feedback.style.display = 'block';
-          setTimeout(() => { feedback.style.display = 'none'; }, 2000);
-          return; // 함수 종료
-      }
-      const userImproper = mixedToImproper(wholeInput, numeratorInput, denominatorInput);
+        if (isNaN(denominatorInput) || denominatorInput === 0) {
+            feedback.textContent = `❌ 분모는 0이 될 수 없습니다. (1 이상의 숫자)`;
+            feedback.className = 'feedback incorrect';
+            feedback.style.display = 'block';
+            setTimeout(() => { feedback.style.display = 'none'; }, 2000);
+            return; // 함수 종료
+        }
 
-      // --- 👇👇👇 정답 형식 검증 로직 (오답 카운트 추가) 👇👇👇 ---
+        // 🌟🌟🌟 [핵심 수정] 총 문제 수를 여기서 증가시킵니다. 🌟🌟🌟
+        gameState.totalProblems++; 
+        // -----------------------------------------------------------------
 
-      // 3. 🔴 기약분수 체크 (필수)
-      if (gcd(userImproper.numerator, userImproper.denominator) !== 1) {
-          feedback.textContent = `❌ 답은 반드시 기약분수 형태로 입력해야 합니다. (예: 2/4는 1/2로 입력)`;
-          feedback.className = 'feedback incorrect';
-          feedback.style.display = 'block';
-          setTimeout(() => { feedback.style.display = 'none'; }, 2000);
-          
-          // 🌟 [수정] 형식 오류 발생 시 오답으로 처리
-          gameState.wrongAnswers++;
-          gameState.currentStreak = 0;
-          updatePracticeStats(); // 통계 업데이트
-          saveData();
-          
-          // document.getElementById('captureSubmitBtn').disabled = false; // ❌ 불필요한 코드 제거
-          return; // 함수 종료 (정답으로 카운트되는 것을 막음)
-      }
+        const userImproper = mixedToImproper(wholeInput, numeratorInput, denominatorInput);
 
-      // 4. 🔴 대분수 강제 입력 체크 (정답이 1보다 크거나 같을 경우)
-      if (gameState.currentAnswer.numerator >= gameState.currentAnswer.denominator) {
-          if (wholeInput === 0) { // 사용자가 가분수 형태로 입력했다면
-              feedback.textContent = `❌ 답이 1보다 크거나 같으면 반드시 대분수 형태로 입력해야 합니다.`;
-              feedback.className = 'feedback incorrect';
-              feedback.style.display = 'block';
-              setTimeout(() => { feedback.style.display = 'none'; }, 2000);
-              
-              // 🌟 [수정] 형식 오류 발생 시 오답으로 처리
-              gameState.wrongAnswers++;
-              gameState.currentStreak = 0;
-              updatePracticeStats(); // 통계 업데이트
-              saveData();
+        // --- 👇👇👇 정답 형식 검증 로직 👇👇👇 ---
 
-              // document.getElementById('captureSubmitBtn').disabled = false; // ❌ 불필요한 코드 제거
-              return; // 함수 종료 (정답으로 카운트되는 것을 막음)
-          }
-      }
-      // -----------------------------------------------------------------
-      
-      const userReduced = reduceFraction(userImproper.numerator, userImproper.denominator);
-      
-      // --- 🚨 디버깅 코드 시작 🚨 --- (이 부분은 그대로 유지해도 됩니다)
-      console.log("--- 정답 비교 디버그 ---");
-      console.log("사용자 입력 (기약 가분수):", userReduced);
-      console.log("정답 (게임 상태):", gameState.currentAnswer);
-      console.log("분자 일치 여부:", userReduced.numerator === gameState.currentAnswer.numerator);
-      console.log("분모 일치 여부:", userReduced.denominator === gameState.currentAnswer.denominator);
-      console.log("------------------------");
-      // --- 🚨 디버깅 코드 끝 🚨 ---
-      
-      const isCorrect = userReduced.numerator === gameState.currentAnswer.numerator && userReduced.denominator === gameState.currentAnswer.denominator;
-      
-      // 이 이후의 isCorrect 로직은 형식과 수학적 값이 모두 맞았을 때만 실행됩니다.
-      if (isCorrect) {
-          gameState.correctAnswers++;
-          gameState.currentStreak++;
-          if (gameState.currentStreak > gameState.bestStreak) {
-              gameState.bestStreak = gameState.currentStreak;
-          }
-          
-          // NEW BALANCE: 30 coins base + 100 coins every 3 streak
-          const baseCoins = GAME_BALANCE.COIN_PER_PROBLEM;
-          const streakBonus = Math.floor(gameState.currentStreak / GAME_BALANCE.STREAK_BONUS_INTERVAL) * GAME_BALANCE.STREAK_BONUS_AMOUNT;
-          const totalCoins = baseCoins + streakBonus;
-          
-          feedback.textContent = `🎉 정답! (+${totalCoins} 코인)${streakBonus > 0 ? ` 🔥 연속 보너스 +${streakBonus}!` : ''}`;
-          feedback.className = 'feedback correct';
-          
-          if (gameState.infiniteCoinsEnabled) {
-              gameState.coins = 9999;
-          } else {
-              gameState.coins += totalCoins;
-          }
-          
-          updateUI();
-          updatePracticeStats();
-          checkAndUnlockTitles();
-          saveData();
-          setTimeout(() => generateProblem(), 1500);
-      } else {
-          // 수학적으로는 틀린 답일 경우
-          gameState.wrongAnswers++;
-          gameState.currentStreak = 0;
-          feedback.textContent = `❌ 틀렸습니다. 다시 한번 풀어보세요!`;
-          feedback.className = 'feedback incorrect';
-          document.getElementById('wholeInput').value = '';
-          document.getElementById('numeratorInput').value = '';
-          document.getElementById('denominatorInput').value = '';
-          document.getElementById('wholeInput').focus();
-          updatePracticeStats();
-          saveData();
-          setTimeout(() => { feedback.style.display = 'none'; }, 2000);
-      }
-      feedback.style.display = 'block';
-  }
+        // 3. 🔴 기약분수 체크 (필수)
+        if (gcd(userImproper.numerator, userImproper.denominator) !== 1) {
+            feedback.textContent = `❌ 답은 반드시 기약분수 형태로 입력해야 합니다. (예: 2/4는 1/2로 입력)`;
+            feedback.className = 'feedback incorrect';
+            feedback.style.display = 'block';
+            setTimeout(() => { feedback.style.display = 'none'; }, 2000);
+            
+            // 🌟 형식 오류 발생 시 오답으로 처리
+            gameState.wrongAnswers++;
+            gameState.currentStreak = 0;
+            updatePracticeStats(); // 통계 업데이트
+            saveData();
+            
+            return; // 함수 종료 (정답으로 카운트되는 것을 막음)
+        }
+
+        // 4. 🔴 대분수 강제 입력 체크 (정답이 1보다 크거나 같을 경우)
+        if (gameState.currentAnswer.numerator >= gameState.currentAnswer.denominator) {
+            if (wholeInput === 0) { // 사용자가 가분수 형태로 입력했다면
+                feedback.textContent = `❌ 답이 1보다 크거나 같으면 반드시 대분수 형태로 입력해야 합니다.`;
+                feedback.className = 'feedback incorrect';
+                feedback.style.display = 'block';
+                setTimeout(() => { feedback.style.display = 'none'; }, 2000);
+                
+                // 🌟 형식 오류 발생 시 오답으로 처리
+                gameState.wrongAnswers++;
+                gameState.currentStreak = 0;
+                updatePracticeStats(); // 통계 업데이트
+                saveData();
+
+                return; // 함수 종료 (정답으로 카운트되는 것을 막음)
+            }
+        }
+        // -----------------------------------------------------------------
+        
+        const userReduced = reduceFraction(userImproper.numerator, userImproper.denominator);
+        
+        // --- 🚨 디버깅 코드 시작 🚨 --- (이 부분은 그대로 유지해도 됩니다)
+        console.log("--- 정답 비교 디버그 ---");
+        console.log("사용자 입력 (기약 가분수):", userReduced);
+        console.log("정답 (게임 상태):", gameState.currentAnswer);
+        console.log("분자 일치 여부:", userReduced.numerator === gameState.currentAnswer.numerator);
+        console.log("분모 일치 여부:", userReduced.denominator === gameState.currentAnswer.denominator);
+        console.log("------------------------");
+        // --- 🚨 디버깅 코드 끝 🚨 ---
+        
+        const isCorrect = userReduced.numerator === gameState.currentAnswer.numerator && userReduced.denominator === gameState.currentAnswer.denominator;
+        
+        // 이 이후의 isCorrect 로직은 형식과 수학적 값이 모두 맞았을 때만 실행됩니다.
+        if (isCorrect) {
+            gameState.correctAnswers++;
+            gameState.currentStreak++;
+            if (gameState.currentStreak > gameState.bestStreak) {
+                gameState.bestStreak = gameState.currentStreak;
+            }
+            
+            // NEW BALANCE: 30 coins base + 100 coins every 3 streak
+            const baseCoins = GAME_BALANCE.COIN_PER_PROBLEM;
+            const streakBonus = Math.floor(gameState.currentStreak / GAME_BALANCE.STREAK_BONUS_INTERVAL) * GAME_BALANCE.STREAK_BONUS_AMOUNT;
+            const totalCoins = baseCoins + streakBonus;
+            
+            feedback.textContent = `🎉 정답! (+${totalCoins} 코인)${streakBonus > 0 ? ` 🔥 연속 보너스 +${streakBonus}!` : ''}`;
+            feedback.className = 'feedback correct';
+            
+            if (gameState.infiniteCoinsEnabled) {
+                gameState.coins = 9999;
+            } else {
+                gameState.coins += totalCoins;
+            }
+            
+            updateUI();
+            updatePracticeStats();
+            checkAndUnlockTitles();
+            saveData();
+            setTimeout(() => generateProblem(), 1500);
+        } else {
+            // 수학적으로는 틀린 답일 경우
+            gameState.wrongAnswers++;
+            gameState.currentStreak = 0;
+            feedback.textContent = `❌ 틀렸습니다. 다시 한번 풀어보세요!`;
+            feedback.className = 'feedback incorrect';
+            document.getElementById('wholeInput').value = '';
+            document.getElementById('numeratorInput').value = '';
+            document.getElementById('denominatorInput').value = '';
+            document.getElementById('wholeInput').focus();
+            updatePracticeStats();
+            saveData();
+            setTimeout(() => { feedback.style.display = 'none'; }, 2000);
+        }
+        feedback.style.display = 'block';
+    } 
 
     // Shop Functions
     function updateShop() {
